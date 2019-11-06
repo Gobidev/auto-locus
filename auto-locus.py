@@ -58,7 +58,7 @@ def get_turning_points(p_function):
 
 
 def get_x_param(x_value):
-    return solve(x_value - x, a)[0]
+    return solve(x_value-x, a)[0]
 
 
 def insert_into_y_value(x_param, y_value):
@@ -68,9 +68,16 @@ def insert_into_y_value(x_param, y_value):
 
 
 if __name__ == '__main__':
-    f_function = "x**2+a*x-a"
-    bend_points = get_bend_points(f_function)
-    print("bend_points", bend_points)
-    x_p = get_x_param(bend_points[0][0])
-    print("x_param", x_p)
-    print(insert_into_y_value(x_p, bend_points[0][1]))
+    f_function = input("Function:\n")
+    if int(input("1=bend points (Extrempunkte), 2=turning points (Wendepunkte)\n")) == 1:
+        bend_points = get_bend_points(f_function)
+        print("bend_points:", bend_points)
+        x_p = get_x_param(bend_points[0][0])
+        print("x_param:", x_p)
+        print("g(x)=" + str(insert_into_y_value(x_p, bend_points[0][1])))
+    else:
+        turning_points = get_turning_points(f_function)
+        print("turning_points:", turning_points)
+        x_p = get_x_param(turning_points[0][0])
+        print("x_param:", x_p)
+        print("g(x)=" + str(insert_into_y_value(x_p, turning_points[0][1])))
