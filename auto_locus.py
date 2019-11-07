@@ -1,7 +1,5 @@
 from sympy import *
 
-f_function = ""
-g_function = ""
 x = Symbol("x")
 a = Symbol("a")
 
@@ -16,21 +14,28 @@ def get_second_derivative(p_function):
     return diff(p_function, x, x)
 
 
-def get_third_derivative(p_function):
-    x = Symbol("x")
-    return diff(p_function, x, x, x)
+def f_x(x, p_function):
+    return eval(p_function)
 
 
-def f_x(x):
-    return eval(f_function)
+def g_x(x, p_function):
+    return eval(p_function)
 
 
-def g_x(x):
-    return eval(g_function)
+def g_a(a, p_function):
+    return eval(p_function)
 
 
-def g_a(a):
-    return eval(g_function)
+def convert_function_to_python(old_function):
+    new_function = old_function.replace("^", "**").replace("ax", "a*x").replace("xa", "x*a")
+    return new_function
+
+
+def convert_function_from_python(old_function):
+    old_function = str(old_function)
+    new_function = old_function.replace("**", "^").replace("a*x", "ax").replace("x*a", "xa")
+    new_function = new_function.replace(" ", "")
+    return new_function
 
 
 def get_bend_points(p_function):
@@ -38,7 +43,7 @@ def get_bend_points(p_function):
     x_value = solve(first_derivative, x)
     y_value = []
     for value in x_value:
-        y_value.append(f_x(value))
+        y_value.append(f_x(value, p_function))
     results = []
     for value in x_value:
         results.append((value, y_value[x_value.index(value)]))
@@ -50,7 +55,7 @@ def get_turning_points(p_function):
     x_value = solve(second_derivative, x)
     y_value = []
     for value in x_value:
-        y_value.append(f_x(value))
+        y_value.append(f_x(value, p_function))
     results = []
     for value in x_value:
         results.append((value, y_value[x_value.index(value)]))
@@ -58,13 +63,15 @@ def get_turning_points(p_function):
 
 
 def get_x_param(x_value):
-    return solve(x_value-x, a)[0]
+    try:
+        return solve(x_value-x, a)[0]
+    except:
+        return []
 
 
 def insert_into_y_value(x_param, y_value):
-    global g_function
     g_function = str(y_value)
-    return g_a(x_param)
+    return g_a(x_param, g_function)
 
 
 if __name__ == '__main__':
