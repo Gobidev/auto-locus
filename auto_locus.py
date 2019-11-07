@@ -1,90 +1,142 @@
-from sympy import *
+import get_locus, get_common_points
+import tkinter as tk
+from tkinter import ttk
 
-x = Symbol("x")
-a = Symbol("a")
+root = tk.Tk()
 
-
-def get_first_derivative(p_function):
-    x = Symbol("x")
-    return diff(p_function, x)
-
-
-def get_second_derivative(p_function):
-    x = Symbol("x")
-    return diff(p_function, x, x)
+root.title("Auto Locus")
+root.resizable(False, False)
 
 
-def f_x(x, p_function):
-    return eval(p_function)
+def run_button_click():
+    input_function = input_entry.get()
+    input_function = get_locus.convert_function_to_python(input_function)
+    x_param = None
+    points = None
 
+    # check if function is empty
+    if input_function == "":
+        locus_output_label.config(text="Missing Parameter")
+        return False
+    kind_of_points = points_combobox.get()
 
-def g_x(x, p_function):
-    return eval(p_function)
+    # check if combobox is empty
+    if kind_of_points == "":
+        locus_output_label.config(text="Missing Parameter")
+        return False
+    elif kind_of_points == "Bend Points":
+        try:
+            # calculate bend points
+            points = get_locus.get_bend_points(input_function)
+            print("bend_points:", points)
+        except:
+            locus_output_label.config(text="Invalid Input")
+            return False
 
+        if not points:
+            locus_output_label.config(text="No bendpoints found")
+            return False
 
-def g_a(a, p_function):
-    return eval(p_function)
+    elif kind_of_points == "Turning Points":
+        try:
+            # calculate turning points
+            points = get_locus.get_turning_points(input_function)
+            print("turning_points:", points)
+        except:
+            locus_output_label.config(text="Invalid Input")
+            return False
 
+        if not points:
+            locus_output_label.config(text="No turning points found")
+            return False
 
-def convert_function_to_python(old_function):
-    new_function = old_function.replace("^", "**").replace("ax", "a*x").replace("xa", "x*a")
-    return new_function
+    # calculating x_param
+    x_param = get_locus.get_x_param(points[0][0])
+    print("x_param:", x_param)
 
-
-def convert_function_from_python(old_function):
-    old_function = str(old_function)
-    new_function = old_function.replace("**", "^").replace("a*x", "ax").replace("x*a", "xa")
-    new_function = new_function.replace(" ", "")
-    return new_function
-
-
-def get_bend_points(p_function):
-    first_derivative = get_first_derivative(p_function)
-    x_value = solve(first_derivative, x)
-    y_value = []
-    for value in x_value:
-        y_value.append(f_x(value, p_function))
-    results = []
-    for value in x_value:
-        results.append((value, y_value[x_value.index(value)]))
-    return results
-
-
-def get_turning_points(p_function):
-    second_derivative = get_second_derivative(p_function)
-    x_value = solve(second_derivative, x)
-    y_value = []
-    for value in x_value:
-        y_value.append(f_x(value, p_function))
-    results = []
-    for value in x_value:
-        results.append((value, y_value[x_value.index(value)]))
-    return results
-
-
-def get_x_param(x_value):
+    if not x_param:
+        locus_output_label.config(text="No locus found")
+        return False
     try:
-        return solve(x_value-x, a)[0]
+        output_function = get_locus.insert_into_y_value(x_param, points[0][1])
+        print("output_function:", output_function)
     except:
-        return []
+        locus_output_label.config(text="No locus found")
+        return False
+
+    # reconverting function
+    output_function = get_locus.convert_function_from_python(output_function)
+    locus_output_label.config(text="g(x)=" + output_function)
 
 
-def insert_into_y_value(x_param, y_value):
-    g_function = str(y_value)
-    return g_a(x_param, g_function)
+def run_button_2_click():
+    input_function = input_entry.get()
+    input_function = get_locus.convert_function_to_python(input_function)
+
+    # check if function is empty
+    if input_function == "":
+        common_points_label.config(text="Missing Parameter")
+        return False
+
+    try:
+        # get common points
+        common_points = get_common_points.get_common_points(input_function)
+        print("common_points:", common_points)
+    except:
+        common_points_label.config(text="Invalid Input")
+        return False
+
+    if not common_points:
+        common_points_label.config(text="No common points found")
+        return False
+
+    output_string = ""
+    for n in common_points:
+        output_string += str(n)
+        if common_points.index(n) > 0:
+            output_string += ", "
+
+    common_points_label.config(text=output_string)
 
 
-if __name__ == '__main__':
-    f_function = input("Function:\n")
-    if int(input("1=bend points (Extrempunkte), 2=turning points (Wendepunkte)\n")) == 1:
-        bend_points = get_bend_points(f_function)
-        print("bend_points:", bend_points)
-        x_p = get_x_param(bend_points[0][0])
-        print("x_param:", x_p)
-        print("g(x)=" + str(insert_into_y_value(x_p, bend_points[0][1])))
-    else:
-        turning_points = get_turning_points(f_function)
-        print("turning_points:", turning_points)
-        x_p = get_x_param(turning_points[0][0])
-        print("x_param:", x_p)
-        print("g(x)=" + str(insert_into_y_value(x_p, turning_points[0][1])))
+# Row 0
+input_label = ttk.Label(root, text="Input Function:")
+input_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+input_entry = ttk.Entry(root)
+input_entry.grid(row=0, column=1, padx=5, pady=5, sticky="e")
+
+# Row 1
+points_label = ttk.Label(root, text="Points:")
+points_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+
+points_combobox = ttk.Combobox(root, values=["Bend Points", "Turning Points"], state="readonly")
+points_combobox.grid(row=1, column=1, padx=5, pady=5, sticky="e")
+
+# Row 2
+run_button = ttk.Button(root, text="Calculate Locus", command=run_button_click)
+run_button.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+
+run_button_2 = ttk.Button(root, text="Calculate Common Points", command=run_button_2_click)
+run_button_2.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+
+# Row 3
+space_label = ttk.Label(root)
+space_label.grid(row=3, column=0, pady=4, sticky="w")
+
+# Row 4
+locus_output_label_name = ttk.Label(root, text="Locus:")
+locus_output_label_name.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+
+locus_output_label = ttk.Label(root, borderwidth=2, relief="groove")
+locus_output_label.grid(row=4, column=1, padx=5, pady=5, sticky="we")
+
+# Row 5
+common_points_label_name = ttk.Label(root, text="Common Points:")
+common_points_label_name.grid(row=5, column=0, padx=5, pady=5, sticky="w")
+
+common_points_label = ttk.Label(root, borderwidth=2, relief="groove")
+common_points_label.grid(row=5, column=1, padx=5, pady=5, sticky="we")
+
+
+root.mainloop()
