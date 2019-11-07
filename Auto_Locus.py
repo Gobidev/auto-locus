@@ -1,4 +1,4 @@
-import auto_locus, get_common_points
+import get_locus, get_common_points
 import tkinter as tk
 from tkinter import ttk
 
@@ -10,7 +10,7 @@ root.resizable(False, False)
 
 def run_button_click():
     input_function = input_entry.get()
-    input_function = auto_locus.convert_function_to_python(input_function)
+    input_function = get_locus.convert_function_to_python(input_function)
     x_param = None
     points = None
 
@@ -27,7 +27,7 @@ def run_button_click():
     elif kind_of_points == "Bend Points":
         try:
             # calculate bend points
-            points = auto_locus.get_bend_points(input_function)
+            points = get_locus.get_bend_points(input_function)
             print("bend_points:", points)
         except:
             locus_output_label.config(text="Invalid Input")
@@ -40,7 +40,7 @@ def run_button_click():
     elif kind_of_points == "Turning Points":
         try:
             # calculate turning points
-            points = auto_locus.get_turning_points(input_function)
+            points = get_locus.get_turning_points(input_function)
             print("turning_points:", points)
         except:
             locus_output_label.config(text="Invalid Input")
@@ -51,36 +51,40 @@ def run_button_click():
             return False
 
     # calculating x_param
-    x_param = auto_locus.get_x_param(points[0][0])
+    x_param = get_locus.get_x_param(points[0][0])
     print("x_param:", x_param)
 
     if not x_param:
         locus_output_label.config(text="No locus found")
         return False
     try:
-        output_function = auto_locus.insert_into_y_value(x_param, points[0][1])
+        output_function = get_locus.insert_into_y_value(x_param, points[0][1])
         print("output_function:", output_function)
     except:
         locus_output_label.config(text="No locus found")
         return False
 
     # reconverting function
-    output_function = auto_locus.convert_function_from_python(output_function)
+    output_function = get_locus.convert_function_from_python(output_function)
     locus_output_label.config(text="g(x)=" + output_function)
 
 
 def run_button_2_click():
     input_function = input_entry.get()
-    input_function = auto_locus.convert_function_to_python(input_function)
+    input_function = get_locus.convert_function_to_python(input_function)
 
     # check if function is empty
     if input_function == "":
         common_points_label.config(text="Missing Parameter")
         return False
 
-    # get common points
-    common_points = get_common_points.get_common_points(input_function)
-    print("common_points:", common_points)
+    try:
+        # get common points
+        common_points = get_common_points.get_common_points(input_function)
+        print("common_points:", common_points)
+    except:
+        common_points_label.config(text="Invalid Input")
+        return False
 
     if not common_points:
         common_points_label.config(text="No common points found")
