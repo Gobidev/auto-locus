@@ -8,7 +8,7 @@ root.title("Auto Locus")
 root.resizable(False, False)
 
 
-def calculate_locus_button_click():
+def run_button_click():
     input_function = input_entry.get()
     input_function = get_locus.convert_function_to_python(input_function)
     x_param = None
@@ -26,6 +26,7 @@ def calculate_locus_button_click():
         return False
     elif kind_of_points == "Bend Points":
         try:
+            # calculate bend points
             points = get_locus.get_bend_points(input_function)
             print("bend_points:", points)
         except:
@@ -38,6 +39,7 @@ def calculate_locus_button_click():
 
     elif kind_of_points == "Turning Points":
         try:
+            # calculate turning points
             points = get_locus.get_turning_points(input_function)
             print("turning_points:", points)
         except:
@@ -48,6 +50,7 @@ def calculate_locus_button_click():
             locus_output_label.config(text="No turning points found")
             return False
 
+    # calculating x_param
     x_param = get_locus.get_x_param(points[0][0])
     print("x_param:", x_param)
 
@@ -66,7 +69,7 @@ def calculate_locus_button_click():
     locus_output_label.config(text="g(x)=" + output_function)
 
 
-def calculate_bend_points_button_click():
+def run_button_2_click():
     input_function = input_entry.get()
     input_function = get_locus.convert_function_to_python(input_function)
 
@@ -76,6 +79,7 @@ def calculate_bend_points_button_click():
         return False
 
     try:
+        # get common points
         common_points = get_common_points.get_common_points(input_function)
         print("common_points:", common_points)
     except:
@@ -110,10 +114,10 @@ points_combobox = ttk.Combobox(root, values=["Bend Points", "Turning Points"], s
 points_combobox.grid(row=1, column=1, padx=5, pady=5, sticky="e")
 
 # Row 2
-run_button = ttk.Button(root, text="Calculate Locus", command=calculate_locus_button_click)
+run_button = ttk.Button(root, text="Calculate Locus", command=run_button_click)
 run_button.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
-run_button_2 = ttk.Button(root, text="Calculate Common Points", command=calculate_bend_points_button_click)
+run_button_2 = ttk.Button(root, text="Calculate Common Points", command=run_button_2_click)
 run_button_2.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
 # Row 3
