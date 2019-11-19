@@ -40,6 +40,7 @@ Auto locus is a small programm that automatically determines the locus of a give
     2. x^2-6*x+11+ax-3*a
     
     Make sure to add a '*' after coefficients!
+    Exponential functions can not be processed.
 </pre>
 - Select if you want the locus for the bend points or the turning points
 - Click either on _Calculate Locus_ or on _Calculate Common Points_.
