@@ -38,17 +38,6 @@ def convert_function_from_python(old_function):
     return new_function
 
 
-def get_zeros(p_function):
-    x_value = solve(p_function, x)
-    y_value = []
-    for value in x_value:
-        y_value.append(f_x(value, p_function))
-    results = []
-    for value in x_value:
-        results.append((value, y_value[x_value.index(value)]))
-    return results
-
-
 def get_bend_points(p_function):
     first_derivative = get_first_derivative(p_function)
     x_value = solve(first_derivative, x)
