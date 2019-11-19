@@ -8,7 +8,7 @@ root.title("Auto Locus")
 root.resizable(False, False)
 
 
-def run_button_click():
+def calculate_locus_button_click():
     input_function = input_entry.get()
     input_function = get_locus.convert_function_to_python(input_function)
     x_param = None
@@ -69,7 +69,7 @@ def run_button_click():
     locus_output_label.config(text="g(x)=" + output_function)
 
 
-def run_button_2_click():
+def calculate_common_points_button_click():
     input_function = input_entry.get()
     input_function = get_locus.convert_function_to_python(input_function)
 
@@ -114,10 +114,10 @@ points_combobox = ttk.Combobox(root, values=["Bend Points", "Turning Points"], s
 points_combobox.grid(row=1, column=1, padx=5, pady=5, sticky="e")
 
 # Row 2
-run_button = ttk.Button(root, text="Calculate Locus", command=run_button_click)
+run_button = ttk.Button(root, text="Calculate Locus", command=calculate_locus_button_click)
 run_button.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
-run_button_2 = ttk.Button(root, text="Calculate Common Points", command=run_button_2_click)
+run_button_2 = ttk.Button(root, text="Calculate Common Points", command=calculate_common_points_button_click)
 run_button_2.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
 # Row 3
